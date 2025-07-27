@@ -1,0 +1,16 @@
+FROM jenkins/jenkins:lts
+
+USER root
+
+# Instalar Maven y Docker CLI
+RUN apt-get update && \
+    apt-get install -y maven docker.io && \
+    rm -rf /var/lib/apt/lists/*
+
+# Agregar usuario jenkins al grupo docker para que pueda usar el socket
+RUN usermod -aG docker jenkins
+
+# Copiar el script para crear el usuario admin
+COPY jenkins/init.groovy.d/ /usr/share/jenkins/ref/init.groovy.d/
+
+USER jenkins

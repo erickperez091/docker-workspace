@@ -1,0 +1,28 @@
+FROM ubuntu:22.04
+
+# Instalar dependencias básicas
+RUN apt-get update && apt-get install -y \
+    openjdk-21-jdk-headless \
+    docker.io \
+    openssh-server \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear directorio de trabajo para sshd
+RUN mkdir /var/run/sshd
+
+# Configurar contraseña para root
+RUN echo 'root:root' | chpasswd
+
+# Configurar SSH para permitir login con contraseña
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+# Generar claves de host para SSH
+RUN ssh-keygen -A
+
+# Exponer puerto SSH
+EXPOSE 22
+
+# Iniciar SSH
+CMD ["/usr/sbin/sshd", "-D"]
