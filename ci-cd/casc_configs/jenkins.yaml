@@ -1,0 +1,4 @@
+jenkins:
+  location:
+    url: "http://192.168.100.158:8080/"
+    adminAddress: "admin@example.com"

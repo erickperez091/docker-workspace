@@ -46,3 +46,9 @@ volumes:
 networks:
   ci_net:
     driver: bridge
+
+
+
+## ¿Dónde se guarda?                            ¿Cuándo?
+## Jenkins container (/var/jenkins_home/.m2)    Si Jenkins ejecuta Maven directamente
+## Agente Docker (/root/.m2)                    Si el build se ejecuta en un contenedor agente
