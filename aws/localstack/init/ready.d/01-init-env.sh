@@ -5,6 +5,7 @@ awslocal s3api create-bucket --bucket documents
 
 echo "Creando stream Kinesis..."
 awslocal kinesis create-stream --stream-name user --shard-count 1
+awslocal kinesis create-stream --stream-name test --shard-count 1
 
 
 echo "Creando tabla DynamoDB para KCL..."
