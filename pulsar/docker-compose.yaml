@@ -1,0 +1,51 @@
+services:
+  pulsar:
+    image: apachepulsar/pulsar:3.2.4
+    container_name: apache-pulsar
+    command: bin/pulsar standalone
+    environment:
+      PULSAR_MEM: "-Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
+      PULSAR_PREFIX_allowAutoTopicCreation: "true"
+      PULSAR_PREFIX_allowAutoTopicCreationType: "partitioned"
+      PULSAR_PREFIX_defaultNumPartitions: "1"
+    ports:
+      - "6650:6650"   # Client
+      - "8080:8080"   # Admin HTTP
+    networks:
+      - pulsar-net
+      - shared
+
+  pulsar-manager:
+    image: apachepulsar/pulsar-manager:latest
+    container_name: apache-pulsar-manager
+    depends_on:
+      - pulsar
+    ports:
+      - "9527:9527"   # UI
+      - "7750:7750"   # Backend API
+    volumes:
+      # ✅ Persistente (usuarios)
+      - ./pulsar-manager/data:/pulsar-manager/pulsar-manager/db
+    environment:
+      SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
+    networks:
+      - pulsar-net
+      - shared
+
+  pulsar-manager-init:
+    image: curlimages/curl:8.5.0
+    container_name: apache-pulsar-init
+    depends_on:
+      - pulsar-manager
+    volumes:
+      - ./pulsar-manager/init-admin.sh:/init-admin.sh
+    entrypoint: ["sh", "/init-admin.sh"]
+    networks:
+      - pulsar-net
+      - shared
+
+networks:
+  pulsar-net:
+    driver: bridge
+  shared:
+    external: true
