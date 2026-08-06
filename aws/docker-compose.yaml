@@ -7,7 +7,9 @@ services:
       - DEBUG=1
 #      - SERVICES=s3,sqs,sns,lambda,cloudwatch,logs,kinesis,dynamodb
       - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN}
+      - ENFORCE_IAM=1
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - ./localstack/init/ready.d:/etc/localstack/init/ready.d
+      - ./aws/:/opt/aws/
 #      - /Users/erick/Downloads:/tmp/Documents
